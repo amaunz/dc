@@ -115,19 +115,22 @@
         .dimension(cancerTypeDim)
         .group(cancerTypeHist)
         .innerRadius(0)
+        .colors(d3.scale.category10())
     
     compoundRingChart
         .width(200).height(200)
         .dimension(compoundDim)
         .group(compoundHist)
         .innerRadius(0)
+        .colors(d3.scale.linear().range(['#BBB','#DDD']))
     
     tumorModelAndCompoundBubbleChart
         .width(640)
         .height(300)
+        .mouseZoomable(true)
         .dimension(tumorModelAndCompoundDim)
         .group(tumorModelAndCompoundReduction)
-        .colors(['red','green'])
+        .colors(d3.scale.category10())
         .colorAccessor(function (p) {
           return getCancerTypeNumber(p.value.cancerType)
          })
