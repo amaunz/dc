@@ -11,14 +11,14 @@
   <table border=0 align='center'>
     <tr>
       <td colspan=3 align='center'>
-        <strong>Responses: In-vivo by In-vitro</strong>
+        <strong>Responses</strong>
         <a class="reset" href="javascript:tumorModelAndCompoundBubbleChart.filterAll();dc.redrawAll();">reset</a>
         <div id="tumor-model-and-compound-bubble-chart"></div>
       </td>
     </tr>
     <tr>
       <td align='center'>
-        <strong>Histogram of Frequencies per Tumor Model and Compound</strong>
+        <strong>Histogram</strong>
         <a class="reset" href="javascript:tumorModelAndCompoundHistChart.filterAll();dc.redrawAll();">reset</a>
         <div id="tumor-model-and-compound-hist-chart"></div>
       </td>
@@ -94,27 +94,12 @@
       })
       return data
     }
- 
 
+    // init charts and data
     var cancerTypeRingChart              = dc.pieChart("#cancer-type-chart")
     var compoundRingChart                = dc.pieChart("#compound-chart")
     var tumorModelAndCompoundHistChart   = dc.barChart("#tumor-model-and-compound-hist-chart")
     var tumorModelAndCompoundBubbleChart = dc.bubbleChart("#tumor-model-and-compound-bubble-chart")
-
-    // use static or load via d3.csv("cancerData.csv", function(error, cancerData) {/* do stuff */});
-    //var cancerData = [
-    //  // x           y           color               label                label     
-    //  {x: 40,  y: 3,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-    //  {x: 38,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-    //  {x: 35,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
-    //  {x: 41,  y: 3,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
-    //  {x: 38,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Vemurafenib'    },
-    //  {x: 62,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
-    //  {x: 110, y: 8,  cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
-    //  {x: 120, y: 10, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
-    //  {x: 110, y: 12, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
-    //  {x: 200, y: 11, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
-    //];
 
     var cancerData = [
       {value: 40,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
@@ -247,7 +232,7 @@
            return p.value.avgY
          })
         .radiusValueAccessor(function (p) {
-           return p.value.countX + p.value.countY;
+           return p.value.countX + p.value.countY
          })
 
         .y(d3.scale.linear().domain(d3.extent(cancerData, function(d){return d.y})))
@@ -268,7 +253,7 @@
              'Substance, Model: ' + labeler(p.value.label, ', ') + strSep() 
             + getDimensionName('x') + ': ' + p.value.avgX + ', '
             + getDimensionName('y') + ': ' + p.value.avgY  + strSep()
-            + 'Count: ' + p.value.countX + p.value.countY
+            + 'Count ('+ getDimensionName('x') + ' and ' + getDimensionName('y') + '): ' + (p.value.countX + p.value.countY)
           )
          })
 
