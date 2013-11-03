@@ -42,13 +42,23 @@
 
     labeler = function(lab, sep) {
       if (sep==undefined) sep="\n"
-      var foo=lab.split(strSep()).join(sep)
-      return(foo)
+      return(lab.split(strSep()).join(sep))
     }
 
     getCancerTypeNumber = function (cancerType) {
       if (cancerType == 'MAXF') return 0 
       if (cancerType == 'CXF')  return 1
+    }
+
+    getDimensions = function() {
+      return {
+        x: 'Invitro',
+        y: 'Invivo',
+      }
+    }
+  
+    getDimensionName = function(which) {
+      return getDimensions()[which]
     }
 
     var cancerTypeRingChart              = dc.pieChart("#cancer-type-chart")
@@ -58,16 +68,16 @@
     // use static or load via d3.csv("cancerData.csv", function(error, cancerData) {/* do stuff */});
     var cancerData = [
       // x           y           color               label                label     
-      {invitro: 40,  invivo: 3,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-      {invitro: 38,  invivo: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-      {invitro: 35,  invivo: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
-      {invitro: 41,  invivo: 3,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
-      {invitro: 38,  invivo: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Vemurafenib'    },
-      {invitro: 62,  invivo: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
-      {invitro: 110, invivo: 8,  cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
-      {invitro: 120, invivo: 10, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
-      {invitro: 110, invivo: 12, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
-      {invitro: 200, invivo: 11, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
+      {x: 40,  y: 3,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
+      {x: 38,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
+      {x: 35,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
+      {x: 41,  y: 3,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
+      {x: 38,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Vemurafenib'    },
+      {x: 62,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
+      {x: 110, y: 8,  cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
+      {x: 120, y: 10, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
+      {x: 110, y: 12, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
+      {x: 200, y: 11, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
     ];
 
     // set crossfilter
@@ -81,31 +91,31 @@
             // add
             function (p,v) {
               ++p.count
-              p.sumInvitro += v.invitro
-              p.avgInvitro  = p.sumInvitro / p.count
-              p.sumInvivo  += v.invivo
-              p.avgInvivo   = p.sumInvivo / p.count
-              p.label       = v.compound + strSep() + v.tumorModel
+              p.sumX += v.x
+              p.avgX  = p.sumX / p.count
+              p.sumY  += v.y
+              p.avgY   = p.sumY / p.count
+              p.label       = v.tumorModel + strSep() + v.compound 
               p.cancerType  = v.cancerType
               return p
             },
             // remove
             function (p,v) {
               --p.count
-              p.sumInvitro -= v.invitro
-              p.avgInvitro  = p.sumInvitro / p.count
-              p.sumInvivo  -= v.invivo
-              p.avgInvivo   = p.sumInvivo / p.count
+              p.sumX -= v.x
+              p.avgX  = p.sumX / p.count
+              p.sumY  -= v.y
+              p.avgY   = p.sumY / p.count
               return p
             },
             // init p
             function () {
               return({
                 count: 0, 
-                sumInvitro: 0, 
-                avgInvitro: 0,
-                sumInvivo: 0, 
-                avgInvivo: 0,
+                sumX: 0, 
+                avgX: 0,
+                sumY: 0, 
+                avgY: 0,
                 label: '',
               })
             })
@@ -135,33 +145,34 @@
           return getCancerTypeNumber(p.value.cancerType)
          })
         .keyAccessor(function (p) {
-           return p.value.avgInvitro
+           return p.value.avgX
          })
         .valueAccessor(function (p) {
-           return p.value.avgInvivo
+           return p.value.avgY
          })
         .radiusValueAccessor(function (p) {
            return p.value.count;
          })
 
-        .y(d3.scale.linear().domain([d3.extent(cancerData, function(d){return d.invivo})]))
+        .y(d3.scale.linear().domain([d3.extent(cancerData, function(d){return d.y})]))
         .elasticY(true)
         .yAxisPadding(5)
 
-        .x(d3.scale.linear().domain([d3.extent(cancerData, function(d){return d.invitro})]))
+        .x(d3.scale.linear().domain([d3.extent(cancerData, function(d){return d.x})]))
         .elasticX(true)
         .xAxisPadding(50)
 
         .r(d3.scale.linear().domain([0, 20]))
 
         .label(function (p) {
-          return labeler(p.value.label, '/')
+          return labeler(p.value.label, ', ')
          })
         .title(function (p) {
-          return labeler(p.value.label + strSep() 
-            + p.value.avgInvitro + strSep() 
-            + p.value.avgInvivo  + strSep()
-            + p.value.count
+            return labeler(
+             'Substance, Model: ' + labeler(p.value.label, ', ') + strSep() 
+            + getDimensionName('x') + ': ' + p.value.avgX + ', '
+            + getDimensionName('y') + ': ' + p.value.avgY  + strSep()
+            + 'Count: ' + p.value.count
           )
          })
 
