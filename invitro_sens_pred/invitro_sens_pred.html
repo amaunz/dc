@@ -158,25 +158,35 @@
     // reduce-custom
     var tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
       function (p,v) {
-        ++p.count
-        p.sumX       += v.x
-        p.avgX        = p.sumX / p.count
-        p.sumY       += v.y
-        p.avgY        = p.sumY / p.count
+        if (v.dim == 'x') {
+          ++p.countX
+          p.sumX       += v.value
+          p.avgX        = p.sumX / p.countX
+        }
+        if (v.dim == 'y') {
+          ++p.countY
+          p.sumY       += v.value
+          p.avgY        = p.sumY / p.countY
+        }
         p.label       = v.tumorModel + strSep() + v.compound 
         p.cancerType  = v.cancerType
         return p
       },
       function (p,v) {
-        --p.count
-        p.sumX       -= v.x
-        p.avgX        = p.sumX / p.count
-        p.sumY       -= v.y
-        p.avgY        = p.sumY / p.count
+        if (v.dim == 'x') {
+          --p.countX
+          p.sumX       -= v.value
+          p.avgX        = p.sumX / p.countX
+        }
+        if (v.dim == 'y') {
+          --p.countY
+          p.sumY       -= v.value
+          p.avgY        = p.sumY / p.countY
+        }
         return p
       },
       function () {
-        return({count: 0, sumX: 0, avgX: 0, sumY: 0, avgY: 0, label: '',})
+        return({countX: 0, countY: 0, sumX: 0, avgX: 0, sumY: 0, avgY: 0, label: '',})
       }
     )
 
@@ -191,7 +201,7 @@
         .dimension(tumorModelAndCompoundCountDim)
         .group(tumorModelAndCompoundCountHist)
         .colors(d3.scale.linear().range(['#BBB','#DDD']))
-        .valueAccessor(function(d) {return(d.value/d.key)})
+        .valueAccessor(function(d) {return(d.value/d.key)}) // de-multiply
         .x(d3.scale.linear().domain(xlim))
 
 //    TODO:
@@ -237,7 +247,7 @@
            return p.value.avgY
          })
         .radiusValueAccessor(function (p) {
-           return p.value.count;
+           return p.value.countX + p.value.countY;
          })
 
         .y(d3.scale.linear().domain(d3.extent(cancerData, function(d){return d.y})))
@@ -258,7 +268,7 @@
              'Substance, Model: ' + labeler(p.value.label, ', ') + strSep() 
             + getDimensionName('x') + ': ' + p.value.avgX + ', '
             + getDimensionName('y') + ': ' + p.value.avgY  + strSep()
-            + 'Count: ' + p.value.count
+            + 'Count: ' + p.value.countX + p.value.countY
           )
          })
 
