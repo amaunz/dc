@@ -73,6 +73,10 @@
     getTumorModelAndCompoundAndCountSelector = function(d) {
       return d.tumorModel + strSep() + d.compound + strSep() + d.tumorModelAndCompoundCount
     }
+
+    getTumorModelAndCompoundExtent = function(cancerData) {
+      return d3.extent(cancerData, function(d){return d.tumorModelAndCompoundCount})
+    }
  
     
     // add counts for specified cols
@@ -131,20 +135,7 @@
 
     // count histogram
     var tumorModelAndCompoundCountHist = tumorModelAndCompoundCountDim.group().reduceCount()
-    //var tumorModelAndCompoundCountHist = tumorModelAndCompoundCountDim.group().reduce(
-    //  function(p,v) {
-    //    p.count = v.tumorModelAndCompoundCount
-    //    p.howOften += 1
-    //    return p
-    //  },
-    //  function(p,v) {
-    //    p.howOften -= 1
-    //    return p
-    //  },
-    //  function() {
-    //    return({howOften:0})
-    //  }
-    //)
+    //console.log(tumorModelAndCompoundCountHist.all())
 
     // bubble chart
     var tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
@@ -171,20 +162,30 @@
       }
     )
 
-    tumorModelAndCompoundHistChart
+    var xlim = getTumorModelAndCompoundExtent(cancerData)
+    xlim[1]+=.1 // need for brushing
+    console.log(xlim)
+
+  tumorModelAndCompoundHistChart
+        .centerBar(true) // not working
+        .gap(0.1)        // not working
+        .renderHorizontalGridLines(true)
         .width(200).height(200)
         .dimension(tumorModelAndCompoundCountDim)
         .group(tumorModelAndCompoundCountHist)
         .colors(d3.scale.linear().range(['#BBB','#DDD']))
-        //.keyAccessor(function(p){
-        //   console.log('p.key')
-        //   console.log(p.key)
-        //   console.log('p.value')
-        //   console.log(p.value)
-        //   return p.value.count
-        // })
-        //.valueAccessor(function(p){return p.value.howOften})
-        .x(d3.scale.linear().domain([0,10]))
+        .valueAccessor(function(d) {return(d.value/d.key)})
+        .x(d3.scale.linear().domain(xlim))
+  
+//    tumorModelAndCompoundHistChart
+//      .xAxis().tickFormat(function(v) {return Math.round(v)})
+//        .tickSubdivide(0)
+//        .ticks(2)
+//    tumorModelAndCompoundHistChart
+//      .yAxis().tickFormat(function(v) {return Math.round(v)})
+//        .tickSubdivide(0)
+//        .ticks(6)
+
 
 
     cancerTypeRingChart
@@ -221,11 +222,11 @@
            return p.value.count;
          })
 
-        .y(d3.scale.linear().domain([d3.extent(cancerData, function(d){return d.y})]))
+        .y(d3.scale.linear().domain(d3.extent(cancerData, function(d){return d.y})))
         .elasticY(true)
         .yAxisPadding(5)
 
-        .x(d3.scale.linear().domain([d3.extent(cancerData, function(d){return d.x})]))
+        .x(d3.scale.linear().domain(d3.extent(cancerData, function(d){return d.x})))
         .elasticX(true)
         .xAxisPadding(50)
 
