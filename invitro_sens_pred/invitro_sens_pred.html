@@ -10,13 +10,18 @@
 
   <table border=0 align='center'>
     <tr>
-      <td colspan=2 align='center'>
+      <td colspan=3 align='center'>
         <strong>Responses: In-vivo by In-vitro</strong>
         <a class="reset" href="javascript:tumorModelAndCompoundBubbleChart.filterAll();dc.redrawAll();">reset</a>
         <div id="tumor-model-and-compound-bubble-chart"></div>
       </td>
     </tr>
     <tr>
+      <td align='center'>
+        <strong>Histogram of Frequencies per Tumor Model and Compound</strong>
+        <a class="reset" href="javascript:tumorModelAndCompoundHistChart.filterAll();dc.redrawAll();">reset</a>
+        <div id="tumor-model-and-compound-hist-chart"></div>
+      </td>
       <td align='center'>
         <strong>Cancer Types</strong>
         <a class="reset" href="javascript:cancerTypeRingChart.filterAll();dc.redrawAll();">reset</a>
@@ -61,8 +66,37 @@
       return getDimensions()[which]
     }
 
+    getTumorModelAndCompoundSelector = function(d) {
+      return d.tumorModel + strSep() + d.compound
+    }
+
+    getTumorModelAndCompoundAndCountSelector = function(d) {
+      return d.tumorModel + strSep() + d.compound + strSep() + d.tumorModelAndCompoundCount
+    }
+ 
+    
+    // add counts for specified cols
+    addCountsForTumorModelAndCompound = function(data) {
+      var facts = crossfilter(data)
+      var tumorModelAndCompoundDim = facts.dimension(function(d) {
+        return getTumorModelAndCompoundSelector(d) 
+      })
+      var tumorModelAndCompoundHist = tumorModelAndCompoundDim.group().reduceCount()
+      var counts = tumorModelAndCompoundHist.all()
+      counts.forEach(function(count) {
+        var modelCompoundAry = count.key.split(strSep())
+        data.forEach(function(d,i){
+          if (d.tumorModel == modelCompoundAry[0] && d.compound == modelCompoundAry[1]) 
+            d.tumorModelAndCompoundCount = count.value
+        })
+      })
+      return data
+    }
+ 
+
     var cancerTypeRingChart              = dc.pieChart("#cancer-type-chart")
     var compoundRingChart                = dc.pieChart("#compound-chart")
+    var tumorModelAndCompoundHistChart   = dc.barChart("#tumor-model-and-compound-hist-chart")
     var tumorModelAndCompoundBubbleChart = dc.bubbleChart("#tumor-model-and-compound-bubble-chart")
 
     // use static or load via d3.csv("cancerData.csv", function(error, cancerData) {/* do stuff */});
@@ -80,46 +114,79 @@
       {x: 200, y: 11, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
     ];
 
+    cancerData = addCountsForTumorModelAndCompound(cancerData)
+
     // set crossfilter
-    var cancerFacts = crossfilter(cancerData),
-        cancerTypeDim = cancerFacts.dimension(function(d) {return d.cancerType}),
-        compoundDim   = cancerFacts.dimension(function(d) {return d.compound  }),
-        tumorModelAndCompoundDim  = cancerFacts.dimension(function(d) {return d.tumorModel + strSep + d.compound}),
-        cancerTypeHist = cancerTypeDim.group().reduceCount(),
-        compoundHist   = compoundDim.group().reduceCount(),
-        tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
-            // add
-            function (p,v) {
-              ++p.count
-              p.sumX += v.x
-              p.avgX  = p.sumX / p.count
-              p.sumY  += v.y
-              p.avgY   = p.sumY / p.count
-              p.label       = v.tumorModel + strSep() + v.compound 
-              p.cancerType  = v.cancerType
-              return p
-            },
-            // remove
-            function (p,v) {
-              --p.count
-              p.sumX -= v.x
-              p.avgX  = p.sumX / p.count
-              p.sumY  -= v.y
-              p.avgY   = p.sumY / p.count
-              return p
-            },
-            // init p
-            function () {
-              return({
-                count: 0, 
-                sumX: 0, 
-                avgX: 0,
-                sumY: 0, 
-                avgY: 0,
-                label: '',
-              })
-            })
-        
+    var cancerFacts    = crossfilter(cancerData),
+        cancerTypeDim  = cancerFacts.dimension(function(d) {return d.cancerType}),
+        compoundDim    = cancerFacts.dimension(function(d) {return d.compound  }),
+        tumorModelAndCompoundCountDim = cancerFacts.dimension(function(d) {
+            return d.tumorModelAndCompoundCount
+            //getTumorModelAndCompoundAndCountSelector(d)
+        }),
+        tumorModelAndCompoundDim      = cancerFacts.dimension(function(d) {return getTumorModelAndCompoundSelector(d)})
+
+    var cancerTypeHist = cancerTypeDim.group().reduceCount()
+    var compoundHist   = compoundDim.group().reduceCount()
+
+    // count histogram
+    var tumorModelAndCompoundCountHist = tumorModelAndCompoundCountDim.group().reduceCount()
+    //var tumorModelAndCompoundCountHist = tumorModelAndCompoundCountDim.group().reduce(
+    //  function(p,v) {
+    //    p.count = v.tumorModelAndCompoundCount
+    //    p.howOften += 1
+    //    return p
+    //  },
+    //  function(p,v) {
+    //    p.howOften -= 1
+    //    return p
+    //  },
+    //  function() {
+    //    return({howOften:0})
+    //  }
+    //)
+
+    // bubble chart
+    var tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
+      function (p,v) {
+        ++p.count
+        p.sumX       += v.x
+        p.avgX        = p.sumX / p.count
+        p.sumY       += v.y
+        p.avgY        = p.sumY / p.count
+        p.label       = v.tumorModel + strSep() + v.compound 
+        p.cancerType  = v.cancerType
+        return p
+      },
+      function (p,v) {
+        --p.count
+        p.sumX       -= v.x
+        p.avgX        = p.sumX / p.count
+        p.sumY       -= v.y
+        p.avgY        = p.sumY / p.count
+        return p
+      },
+      function () {
+        return({count: 0, sumX: 0, avgX: 0, sumY: 0, avgY: 0, label: '',})
+      }
+    )
+
+    tumorModelAndCompoundHistChart
+        .width(200).height(200)
+        .dimension(tumorModelAndCompoundCountDim)
+        .group(tumorModelAndCompoundCountHist)
+        .colors(d3.scale.linear().range(['#BBB','#DDD']))
+        //.keyAccessor(function(p){
+        //   console.log('p.key')
+        //   console.log(p.key)
+        //   console.log('p.value')
+        //   console.log(p.value)
+        //   return p.value.count
+        // })
+        //.valueAccessor(function(p){return p.value.howOften})
+        .x(d3.scale.linear().domain([0,10]))
+
+
     cancerTypeRingChart
         .width(200).height(200)
         .dimension(cancerTypeDim)
@@ -133,7 +200,7 @@
         .group(compoundHist)
         .innerRadius(0)
         .colors(d3.scale.linear().range(['#BBB','#DDD']))
-    
+
     tumorModelAndCompoundBubbleChart
         .width(640)
         .height(300)
