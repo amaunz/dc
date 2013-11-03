@@ -82,9 +82,7 @@
     // add counts for specified cols
     addCountsForTumorModelAndCompound = function(data) {
       var facts = crossfilter(data)
-      var tumorModelAndCompoundDim = facts.dimension(function(d) {
-        return getTumorModelAndCompoundSelector(d) 
-      })
+      var tumorModelAndCompoundDim = facts.dimension(function(d) {return getTumorModelAndCompoundSelector(d)})
       var tumorModelAndCompoundHist = tumorModelAndCompoundDim.group().reduceCount()
       var counts = tumorModelAndCompoundHist.all()
       counts.forEach(function(count) {
@@ -104,40 +102,60 @@
     var tumorModelAndCompoundBubbleChart = dc.bubbleChart("#tumor-model-and-compound-bubble-chart")
 
     // use static or load via d3.csv("cancerData.csv", function(error, cancerData) {/* do stuff */});
+    //var cancerData = [
+    //  // x           y           color               label                label     
+    //  {x: 40,  y: 3,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
+    //  {x: 38,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
+    //  {x: 35,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
+    //  {x: 41,  y: 3,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
+    //  {x: 38,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Vemurafenib'    },
+    //  {x: 62,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
+    //  {x: 110, y: 8,  cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
+    //  {x: 120, y: 10, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
+    //  {x: 110, y: 12, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
+    //  {x: 200, y: 11, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
+    //];
+
     var cancerData = [
-      // x           y           color               label                label     
-      {x: 40,  y: 3,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-      {x: 38,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-      {x: 35,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
-      {x: 41,  y: 3,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
-      {x: 38,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Vemurafenib'    },
-      {x: 62,  y: 4,  cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
-      {x: 110, y: 8,  cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
-      {x: 120, y: 10, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
-      {x: 110, y: 12, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
-      {x: 200, y: 11, cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
+      {value: 40,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
+      {value: 38,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
+      {value: 35,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
+      {value: 41,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
+      {value: 38,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Vemurafenib'    },
+      {value: 62,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
+      {value: 110, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
+      {value: 120, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
+      {value: 110, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
+      {value: 200, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
+      {value: 3,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
+      {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
+      {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
+      {value: 3,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
+      {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Vemurafenib'    },
+      {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
+      {value: 8,   dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
+      {value: 10,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
+      {value: 12,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
+      {value: 11,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
     ];
 
-    cancerData = addCountsForTumorModelAndCompound(cancerData)
 
-    // set crossfilter
-    var cancerFacts    = crossfilter(cancerData),
-        cancerTypeDim  = cancerFacts.dimension(function(d) {return d.cancerType}),
-        compoundDim    = cancerFacts.dimension(function(d) {return d.compound  }),
-        tumorModelAndCompoundCountDim = cancerFacts.dimension(function(d) {
-            return d.tumorModelAndCompoundCount
-            //getTumorModelAndCompoundAndCountSelector(d)
-        }),
-        tumorModelAndCompoundDim      = cancerFacts.dimension(function(d) {return getTumorModelAndCompoundSelector(d)})
 
-    var cancerTypeHist = cancerTypeDim.group().reduceCount()
-    var compoundHist   = compoundDim.group().reduceCount()
+    cancerData                         = addCountsForTumorModelAndCompound(cancerData)
+    var cancerFacts                    = crossfilter(cancerData)
 
-    // count histogram
+    // dimensions
+    var cancerTypeDim                  = cancerFacts.dimension(function(d) {return d.cancerType})
+    var compoundDim                    = cancerFacts.dimension(function(d) {return d.compound  })
+    var tumorModelAndCompoundDim       = cancerFacts.dimension(function(d) {return getTumorModelAndCompoundSelector(d)})
+    var tumorModelAndCompoundCountDim  = cancerFacts.dimension(function(d) {return d.tumorModelAndCompoundCount})
+
+    // reduce-count
+    var cancerTypeHist                 = cancerTypeDim                .group().reduceCount()
+    var compoundHist                   = compoundDim                  .group().reduceCount()
     var tumorModelAndCompoundCountHist = tumorModelAndCompoundCountDim.group().reduceCount()
-    //console.log(tumorModelAndCompoundCountHist.all())
 
-    // bubble chart
+    // reduce-custom
     var tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
       function (p,v) {
         ++p.count
@@ -163,8 +181,7 @@
     )
 
     var xlim = getTumorModelAndCompoundExtent(cancerData)
-    xlim[1]+=.1 // need for brushing
-    console.log(xlim)
+    xlim[1]+=.1 // needed for brushing atm
 
   tumorModelAndCompoundHistChart
         .centerBar(true) // not working
@@ -176,7 +193,8 @@
         .colors(d3.scale.linear().range(['#BBB','#DDD']))
         .valueAccessor(function(d) {return(d.value/d.key)})
         .x(d3.scale.linear().domain(xlim))
-  
+
+//    TODO:
 //    tumorModelAndCompoundHistChart
 //      .xAxis().tickFormat(function(v) {return Math.round(v)})
 //        .tickSubdivide(0)
