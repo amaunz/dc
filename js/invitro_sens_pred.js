@@ -19,10 +19,8 @@ var cancerData = [
   {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
   {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
   {value: 3,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
-  {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Vemurafenib'    },
   {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
   {value: 8,   dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
-  {value: 10,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
   {value: 12,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
   {value: 11,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
 ];
@@ -80,9 +78,10 @@ var tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
 
 // histogram
 var xlim = getTumorModelAndCompoundExtent(cancerData)
+var xTicks = xlim[1]-xlim[0]+1
 xlim[0]-=1 // needed for brushing atm
 xlim[1]+=1 // needed for brushing atm
-var yTicks=d3.max(tumorModelAndCompoundCountHist.all(), getNormalizedHistValues)
+var yTicks=d3.max(tumorModelAndCompoundCountHist.all(), getNormalizedHistValues)+1
 
 tumorModelAndCompoundHistChart
     .centerBar(true) // not working
@@ -98,7 +97,7 @@ tumorModelAndCompoundHistChart
 tumorModelAndCompoundHistChart
     .xAxis().tickFormat(function(v) {return Math.round(v)})
     .tickSubdivide(0)
-    .ticks(2)
+    .ticks(xTicks)
 tumorModelAndCompoundHistChart
     .yAxis().tickFormat(function(v) {return Math.round(v)})
     .tickSubdivide(0)
