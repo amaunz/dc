@@ -34,12 +34,17 @@ var cancerFacts                    = crossfilter(cancerData)
 var cancerTypeDim                  = cancerFacts.dimension(function(d) {return d.cancerType})
 var compoundDim                    = cancerFacts.dimension(function(d) {return d.compound  })
 var tumorModelAndCompoundDim       = cancerFacts.dimension(function(d) {return getTumorModelAndCompoundSelector(d)})
-var tumorModelAndCompoundCountDim  = cancerFacts.dimension(function(d) {return d.tumorModelAndCompoundCount})
+var tumorModelAndCompoundCountDimX = cancerFacts.dimension(function(d) {
+    return d.tumorModelAndCompoundCount + strSep() + d.dim
+}).filterFunction(function(d){
+  var dim=d.split(strSep())[1]
+  return d=='x'
+})
 
 // reduce-count
-var cancerTypeHist                 = cancerTypeDim                .group().reduceCount()
-var compoundHist                   = compoundDim                  .group().reduceCount()
-var tumorModelAndCompoundCountHist = tumorModelAndCompoundCountDim.group().reduceCount()
+var cancerTypeHist                  = cancerTypeDim                 .group().reduceCount()
+var compoundHist                    = compoundDim                   .group().reduceCount()
+var tumorModelAndCompoundCountHistX = tumorModelAndCompoundCountDimX.group().reduceCount()
 
 // reduce-custom
 var tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
@@ -81,17 +86,25 @@ var xlim = getTumorModelAndCompoundExtent(cancerData)
 var xTicks = xlim[1]-xlim[0]+1
 xlim[0]-=1 // needed for brushing atm
 xlim[1]+=1 // needed for brushing atm
-var yTicks=d3.max(tumorModelAndCompoundCountHist.all(), getNormalizedHistValues)+1
 
+console.log(tumorModelAndCompoundCountHistX.all())
+var yTicks=d3.max(tumorModelAndCompoundCountHistX.all(), getNormalizedHistValues)+1
 tumorModelAndCompoundHistChart
-    .centerBar(true) // not working
-    .gap(0.1)        // not working
+    .centerBar(true)
+    .gap(0.1)
     .renderHorizontalGridLines(true)
     .width(200).height(200)
-    .dimension(tumorModelAndCompoundCountDim)
-    .group(tumorModelAndCompoundCountHist)
+    .dimension(tumorModelAndCompoundCountDimX)
+    .group(tumorModelAndCompoundCountHistX)
     .colors(d3.scale.linear().range(['#BBB','#DDD']))
-    .valueAccessor(function(d) {return(d.value/d.key)}) // de-multiply
+    .valueAccessor(function(d) {
+        var x=d.key.split(strSep())[0]
+        return(d.value/(+x))
+     }) // de-multiply
+    .keyAccessor(function(d) {
+       var x=d.key.split(strSep())[0]
+       return(+x)
+     })
     .x(d3.scale.linear().domain(xlim))
 
 tumorModelAndCompoundHistChart
