@@ -27,30 +27,44 @@ var getTumorModelAndCompoundSelector = function(d) {
   return d.tumorModel + strSep() + d.compound
 }
 
-var getTumorModelAndCompoundAndCountSelector = function(d) {
-  return d.tumorModel + strSep() + d.compound + strSep() + d.tumorModelAndCompoundCount
+var getTumorModelAndCompoundAndDimSelector = function(d) {
+  return d.tumorModel + strSep() + d.compound + strSep() + d.dim
 }
 
-var getTumorModelAndCompoundExtent = function(cancerData) {
-  return d3.extent(cancerData, function(d){return d.tumorModelAndCompoundCount})
+var getTumorModelAndCompoundExtentX = function(cancerData) {
+  return d3.extent(cancerData, function(d){return d.tmcdCountX})
 }
 
-var getNormalizedHistValues = function(d) {
-  return d.value/d.key
+var getTumorModelAndCompoundExtentY = function(cancerData) {
+  return d3.extent(cancerData, function(d){return d.tmcdCountY})
+}
+
+var getTumorModelAndCompoundDimExtent = function(cancerData) {
+  return d3.extent(getTumorModelAndCompoundExtentX(cancerData)
+           .concat(getTumorModelAndCompoundExtentY(cancerData)))
 }
 
 // add counts for specified cols
 var addCountsForTumorModelAndCompound = function(data) {
   var facts = crossfilter(data)
-  var tumorModelAndCompoundDim = facts.dimension(function(d) {return getTumorModelAndCompoundSelector(d)})
-  var tumorModelAndCompoundHist = tumorModelAndCompoundDim.group().reduceCount()
-  var counts = tumorModelAndCompoundHist.all()
+  var tumorModelAndCompoundDimDim = facts.dimension(function(d) {return getTumorModelAndCompoundAndDimSelector(d)})
+  var tumorModelAndCompoundDimHist = tumorModelAndCompoundDimDim.group().reduceCount()
+  var counts = tumorModelAndCompoundDimHist.all()
   counts.forEach(function(count) {
-    var modelCompoundAry = count.key.split(strSep())
+    var modelCompoundDimAry = count.key.split(strSep())
     data.forEach(function(d,i){
-      if (d.tumorModel == modelCompoundAry[0] && d.compound == modelCompoundAry[1]) 
-        d.tumorModelAndCompoundCount = count.value
+      if (d.tumorModel == modelCompoundDimAry[0] && d.compound == modelCompoundDimAry[1] && d.dim == modelCompoundDimAry[2]) {
+        if (d.dim == 'x')
+          d.tmcdCountX = count.value
+        if (d.dim == 'y')
+          d.tmcdCountY = count.value
+        if (d.tmcdCountX == undefined)
+          d.tmcdCountX = 0
+        if (d.tmcdCountY == undefined)
+          d.tmcdCountY = 0
+      }
     })
   })
   return data
 }
+
