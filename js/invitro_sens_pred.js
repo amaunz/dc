@@ -118,7 +118,7 @@ tumorModelAndCompoundHistChart
 
 // cancer type
 cancerTypeRingChart
-    .width(200).height(200)
+    .width(175).height(175)
     .dimension(cancerTypeDim)
     .group(cancerTypeHist)
     .innerRadius(0)
@@ -126,7 +126,7 @@ cancerTypeRingChart
 
 // compound
 compoundRingChart
-    .width(200).height(200)
+    .width(175).height(175)
     .dimension(compoundDim)
     .group(compoundHist)
     .innerRadius(0)
