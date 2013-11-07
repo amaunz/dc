@@ -1,4 +1,4 @@
-invitroSensPred = function() {
+runInvitroSensPred = function() {
 
   // init charts and data
   var cancerTypeRingChart              = dc.pieChart("#cancer-type-chart")
