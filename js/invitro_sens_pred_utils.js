@@ -53,10 +53,10 @@ var addCountsForTumorModelAndCompound = function(data) {
   counts.forEach(function(count) {
     var modelCompoundDimAry = count.key.split(strSep())
     data.forEach(function(d,i){
-      if (d.tumorModel == modelCompoundDimAry[0] && d.compound == modelCompoundDimAry[1] && d.dim == modelCompoundDimAry[2]) {
-        if (d.dim == 'x')
+      if (d.tumorModel == modelCompoundDimAry[0] && d.compound == modelCompoundDimAry[1]) {
+        if (modelCompoundDimAry[2] == 'x')
           d.tmcdCountX = count.value
-        if (d.dim == 'y')
+        if (modelCompoundDimAry[2] == 'y')
           d.tmcdCountY = count.value
         if (d.tmcdCountX == undefined)
           d.tmcdCountX = 0
