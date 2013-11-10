@@ -59,12 +59,16 @@ runInvitroSensPred = function() {
       if (v.dim == 'x') {
         ++p.countX
         p.sumX       += v.value
+        p.prodX      *= v.value
         p.avgX        = p.sumX / p.countX
+        p.geoMeanX    = Math.pow(p.prodX, 1/p.countX)
       }
       if (v.dim == 'y') {
         ++p.countY
         p.sumY       += v.value
+        p.prodY      *= v.value
         p.avgY        = p.sumY / p.countY
+        p.geoMeanY    = Math.pow(p.prodY, 1/p.countY)
       }
       p.label         = v.tumorModel + strSep() + v.compound 
       p.cancerType    = v.cancerType
@@ -78,17 +82,25 @@ runInvitroSensPred = function() {
       if (v.dim == 'x') {
         --p.countX
         p.sumX       -= v.value
+        p.prodX      /= v.value
         p.avgX        = p.sumX / p.countX
+        p.geoMeanX    = Math.pow(p.prodX, 1/p.countX)
       }
       if (v.dim == 'y') {
         --p.countY
         p.sumY       -= v.value
+        p.prodY      /= v.value
         p.avgY        = p.sumY / p.countY
+        p.geoMeanY    = Math.pow(p.prodY, 1/p.countY)
       }
       return p
     },
     function () {
-      return({countX: 0, countY: 0, sumX: 0, avgX: 0, sumY: 0, avgY: 0, label: '', cancerType: '', tmcdCountX: 0, tmcdCountY: 0})
+      return({
+        countX: 0, countY: 0, 
+        sumX: 0, prodX: 0, avgX: 0, geoMeanX: 0, 
+        sumY: 0, prodY: 0, avgY: 0, geoMeanY: 0, 
+        label: '', cancerType: '', tmcdCountX: 0, tmcdCountY: 0})
     }
   )
   
@@ -166,6 +178,10 @@ runInvitroSensPred = function() {
       .dimension(cancerTypeDim)
       .group(cancerTypeHist)
       .colors(cancerDataColors)
+      .colorAccessor(function (p) {
+        return(getCancerTypes(cancerData)
+              .indexOf(p.key))
+       })
   
   // tumor model
   tumorModelRingChart

@@ -95,6 +95,10 @@ colorizeAccToCancerTypes = function() {
       })
   tumorModelAndCompoundBubbleChart.redraw()
   cancerTypeRingChart.colors(cancerDataColors)
+                     .colorAccessor(function (p) {
+                          return(getCancerTypes(cancerData).
+                                 indexOf(p.key))
+                        })
   cancerTypeRingChart.redraw()
   modeOfActionRingChart.colors(d3.scale.category20c())
   modeOfActionRingChart.redraw()
@@ -108,6 +112,10 @@ colorizeAccToModesOfAction = function() {
       })
   tumorModelAndCompoundBubbleChart.redraw()
   modeOfActionRingChart.colors(cancerDataColors)
+                       .colorAccessor(function (p) {
+                          return(getModesOfAction(cancerData).
+                                 indexOf(p.key))
+                        })
   modeOfActionRingChart.redraw()
   cancerTypeRingChart.colors(d3.scale.category20c())
   cancerTypeRingChart.redraw()
