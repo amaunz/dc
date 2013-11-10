@@ -164,13 +164,13 @@ runInvitroSensPred = function() {
   
   // tumor model
   tumorModelRingChart
-      .width(175).height(175)
+      .width(175).height(480)
       .dimension(tumorModelDim)
       .group(tumorModelHist)
   
   // compound
   compoundRingChart
-      .width(175).height(175)
+      .width(175).height(480)
       .dimension(compoundDim)
       .group(compoundHist)
   

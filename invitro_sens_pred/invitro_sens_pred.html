@@ -10,41 +10,18 @@
 
   <table border=0 align='center'>
     <tr>
-      <td colspan=4 align='center'>
-        <div id="tumor-model-and-compound-bubble-chart">
-        <strong>Responses</strong>
-        <span class="reset" style="display: none;">Current filter: <span class="filter"></span></span>
-        <a class="reset" href="javascript:tumorModelAndCompoundBubbleChart.filterAll();dc.redrawAll();">reset</a>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td align='center'>
-        <div id="tumor-model-and-compound-hist-chart-x">
-        <strong>Histogram X</strong>
-        <span class="reset" style="display: none;">Current filter: <span class="filter"></span></span>
-        <a class="reset" href="javascript:tumorModelAndCompoundHistChartX.filterAll();dc.redrawAll();">reset</a>
-        </div>
-      </td>
-      <td align='center'>
-        <div id="tumor-model-and-compound-hist-chart-y">
-        <strong>Histogram Y</strong>
-        <span class="reset" style="display: none;">Current filter: <span class="filter"></span></span>
-        <a class="reset" href="javascript:tumorModelAndCompoundHistChartY.filterAll();dc.redrawAll();">reset</a>
-        </div>
-      </td>
-      <td align='center'>
-        <div id="cancer-type-chart">
-        <strong>Cancer Types</strong>
-        <span class="reset" style="display: none;">Current filter: <span class="filter"></span></span>
-        <a class="reset" href="javascript:cancerTypeRingChart.filterAll();dc.redrawAll();">reset</a>
-        </div>
-      </td>
       <td align='center'>
         <div id="tumor-model-chart">
         <strong>Tumor Models</strong>
         <span class="reset" style="display: none;">Current filter: <span class="filter"></span></span>
         <a class="reset" href="javascript:tumorModelRingChart.filterAll();dc.redrawAll();">reset</a>
+        </div>
+      </td>
+      <td align='center'>
+        <div id="tumor-model-and-compound-bubble-chart">
+        <strong>Responses</strong>
+        <span class="reset" style="display: none;">Current filter: <span class="filter"></span></span>
+        <a class="reset" href="javascript:tumorModelAndCompoundBubbleChart.filterAll();dc.redrawAll();">reset</a>
         </div>
       </td>
       <td align='center'>
@@ -54,6 +31,39 @@
         <a class="reset" href="javascript:compoundRingChart.filterAll();dc.redrawAll();">reset</a>
         </div>
       </td>
+    </tr>
+    <tr>
+
+      <td align='center'>&nbsp;</td>
+      <td align='center'>
+
+        <table border=0 align='center'>
+          <tr>
+            <td align='center'>
+              <div id="tumor-model-and-compound-hist-chart-x">
+              <strong>Histogram X</strong>
+              <span class="reset" style="display: none;">Current filter: <span class="filter"></span></span>
+              <a class="reset" href="javascript:tumorModelAndCompoundHistChartX.filterAll();dc.redrawAll();">reset</a>
+              </div>
+            </td>
+            <td align='center'>
+              <div id="tumor-model-and-compound-hist-chart-y">
+              <strong>Histogram Y</strong>
+              <span class="reset" style="display: none;">Current filter: <span class="filter"></span></span>
+              <a class="reset" href="javascript:tumorModelAndCompoundHistChartY.filterAll();dc.redrawAll();">reset</a>
+              </div>
+            </td>
+            <td align='center'>
+              <div id="cancer-type-chart">
+              <strong>Cancer Types</strong>
+              <span class="reset" style="display: none;">Current filter: <span class="filter"></span></span>
+              <a class="reset" href="javascript:cancerTypeRingChart.filterAll();dc.redrawAll();">reset</a>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <td align='center'>&nbsp;</td>
+
     </tr>
   </table>
   <!--<a class="reset" href="javascript:dc.filterAll(); dc.renderAll();">Reset All</a>-->
