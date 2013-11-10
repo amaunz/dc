@@ -139,3 +139,22 @@ titleFunctionBubble = function (p,reduceFun) {
 
   return(res)
 }
+
+var cleanArray = function (actual){
+  var newArray = new Array();
+  for(var i = 0; i<actual.length; i++){
+        if (actual[i]){
+                newArray.push(actual[i]);
+            }
+    }
+  return newArray;
+}
+
+updateCorrelation = function() {
+  x=tumorModelAndCompoundReduction.top(Infinity).map(function(d){return(d.value.avgX)})
+  y=tumorModelAndCompoundReduction.top(Infinity).map(function(d){return(d.value.avgY)})
+  cor=getPearsonCorrelation(cleanArray(x),cleanArray(y))
+  val="FAIL"
+  if (!isNaN(cor)) val=cor
+  d3.select('#foo').html(val)
+}

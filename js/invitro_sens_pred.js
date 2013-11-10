@@ -43,7 +43,7 @@ runInvitroSensPred = function() {
   var modeOfActionDim                = cancerFacts.dimension(function(d) {return d.modeOfAction})
   var tmcdCountXDim                  = cancerFacts.dimension(function(d) {return d.tmcdCountX  })
   var tmcdCountYDim                  = cancerFacts.dimension(function(d) {return d.tmcdCountY  })
-  var tumorModelAndCompoundDim       = cancerFacts.dimension(function(d) {return getTumorModelAndCompoundSelector(d)})
+  window.tumorModelAndCompoundDim    = cancerFacts.dimension(function(d) {return getTumorModelAndCompoundSelector(d)})
   
   // reduce-count
   var cancerTypeHist                 = cancerTypeDim                .group().reduceCount()
@@ -54,7 +54,7 @@ runInvitroSensPred = function() {
   var tmcdCountYHist                 = tmcdCountYDim                .group().reduceCount()
   
   // reduce-custom
-  var tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
+  window.tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
     function (p,v) {
       if (v.dim == 'x') {
         ++p.countX
@@ -142,6 +142,7 @@ runInvitroSensPred = function() {
   
   tumorModelAndCompoundHistChartX = barChartCommons(tumorModelAndCompoundHistChartX)
   tumorModelAndCompoundHistChartX
+      .on('filtered', function(){ updateCorrelation() })
       .width(200).height(200)
       .dimension(tmcdCountXDim)
       .group(tmcdCountXHist)
@@ -158,6 +159,7 @@ runInvitroSensPred = function() {
   
   tumorModelAndCompoundHistChartY = barChartCommons(tumorModelAndCompoundHistChartY)
   tumorModelAndCompoundHistChartY
+      .on('filtered', function(){ updateCorrelation() })
       .width(200).height(200)
       .dimension(tmcdCountYDim)
       .group(tmcdCountYHist)
@@ -174,6 +176,7 @@ runInvitroSensPred = function() {
   
   // cancer type
   cancerTypeRingChart
+      .on('filtered', function(){ updateCorrelation() })
       .width(175).height(175)
       .dimension(cancerTypeDim)
       .group(cancerTypeHist)
@@ -185,24 +188,28 @@ runInvitroSensPred = function() {
   
   // tumor model
   tumorModelRingChart
+      .on('filtered', function(){ updateCorrelation() })
       .width(175).height(480)
       .dimension(tumorModelDim)
       .group(tumorModelHist)
   
   // compound
   compoundRingChart
+      .on('filtered', function(){ updateCorrelation() })
       .width(175).height(480)
       .dimension(compoundDim)
       .group(compoundHist)
 
   // mode of action
   modeOfActionRingChart
+      .on('filtered', function(){ updateCorrelation() })
       .width(175).height(175)
       .dimension(modeOfActionDim)
       .group(modeOfActionHist)
   
   // value pair
   tumorModelAndCompoundBubbleChart
+      .on('filtered', function(){ updateCorrelation() })
       .width(640)
       .height(480)
       .mouseZoomable(true)
@@ -242,5 +249,6 @@ runInvitroSensPred = function() {
   
       .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false
       .renderVerticalGridLines(true) // (optional) render vertical grid lines, :default=false
+
 
 }
