@@ -4,29 +4,30 @@ runInvitroSensPred = function() {
   window.cancerTypeRingChart              = dc.rowChart("#cancer-type-chart")
   window.tumorModelRingChart              = dc.rowChart("#tumor-model-chart")
   window.compoundRingChart                = dc.rowChart("#compound-chart")
+  window.modeOfActionRingChart            = dc.rowChart("#mode-of-action-chart")
   window.tumorModelAndCompoundHistChartX  = dc.barChart("#tumor-model-and-compound-hist-chart-x")
   window.tumorModelAndCompoundHistChartY  = dc.barChart("#tumor-model-and-compound-hist-chart-y")
   window.tumorModelAndCompoundBubbleChart = dc.bubbleChart("#tumor-model-and-compound-bubble-chart")
   
   // TODO: eliminate vals for 1 dim only from DATA!!!
   var cancerData = [
-    {value: 40,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-    {value: 38,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-    {value: 35,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
-    {value: 41,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
-    {value: 62,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
-    {value: 110, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
-    {value: 120, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
-    {value: 110, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
-    {value: 200, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
-    {value: 3,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-    {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'      },
-    {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'    },
-    {value: 3,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'      },
-    {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil' },
-    {value: 8,   dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'    },
-    {value: 12,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'      },
-    {value: 11,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil' },
+    {value: 40,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'     , modeOfAction: 'DNA Alkylation'},
+    {value: 38,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'     , modeOfAction: 'DNA Alkylation'},
+    {value: 35,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'   , modeOfAction: 'Inhibitor'},
+    {value: 41,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'     , modeOfAction: 'DNA Alkylation'},
+    {value: 62,  dim: 'x', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil', modeOfAction: 'Cell Poison'},
+    {value: 110, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'   , modeOfAction: 'Inhibitor'},
+    {value: 120, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'     , modeOfAction: 'DNA Alkylation'},
+    {value: 110, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'     , modeOfAction: 'DNA Alkylation'},
+    {value: 200, dim: 'x', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil', modeOfAction: 'Cell Poison'},
+    {value: 3,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'     , modeOfAction: 'DNA Alkylation'},
+    {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Cisplatin'     , modeOfAction: 'DNA Alkylation'},
+    {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF1', compound: 'Vemurafenib'   , modeOfAction: 'Inhibitor'},
+    {value: 3,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: 'Cisplatin'     , modeOfAction: 'DNA Alkylation'},
+    {value: 4,   dim: 'y', cancerType: 'MAXF', tumorModel: 'MAXF2', compound: '5-Fluorouracil', modeOfAction: 'Cell Poison'},
+    {value: 8,   dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Vemurafenib'   , modeOfAction: 'Inhibitor'},
+    {value: 12,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: 'Cisplatin'     , modeOfAction: 'DNA Alkylation'},
+    {value: 11,  dim: 'y', cancerType: 'CXF',  tumorModel: 'CXF1',  compound: '5-Fluorouracil', modeOfAction: 'Cell Poison'},
   ];
   
   
@@ -36,17 +37,19 @@ runInvitroSensPred = function() {
   var cancerFacts                    = crossfilter(cancerData)
   
   // dimensions
-  var cancerTypeDim                  = cancerFacts.dimension(function(d) {return d.cancerType})
-  var tumorModelDim                  = cancerFacts.dimension(function(d) {return d.tumorModel})
-  var compoundDim                    = cancerFacts.dimension(function(d) {return d.compound  })
-  var tmcdCountXDim                  = cancerFacts.dimension(function(d) {return d.tmcdCountX})
-  var tmcdCountYDim                  = cancerFacts.dimension(function(d) {return d.tmcdCountY})
+  var cancerTypeDim                  = cancerFacts.dimension(function(d) {return d.cancerType  })
+  var tumorModelDim                  = cancerFacts.dimension(function(d) {return d.tumorModel  })
+  var compoundDim                    = cancerFacts.dimension(function(d) {return d.compound    })
+  var modeOfActionDim                = cancerFacts.dimension(function(d) {return d.modeOfAction})
+  var tmcdCountXDim                  = cancerFacts.dimension(function(d) {return d.tmcdCountX  })
+  var tmcdCountYDim                  = cancerFacts.dimension(function(d) {return d.tmcdCountY  })
   var tumorModelAndCompoundDim       = cancerFacts.dimension(function(d) {return getTumorModelAndCompoundSelector(d)})
   
   // reduce-count
   var cancerTypeHist                 = cancerTypeDim                .group().reduceCount()
   var tumorModelHist                 = tumorModelDim                .group().reduceCount()
   var compoundHist                   = compoundDim                  .group().reduceCount()
+  var modeOfActionHist               = modeOfActionDim              .group().reduceCount()
   var tmcdCountXHist                 = tmcdCountXDim                .group().reduceCount()
   var tmcdCountYHist                 = tmcdCountYDim                .group().reduceCount()
   
@@ -65,6 +68,8 @@ runInvitroSensPred = function() {
       }
       p.label         = v.tumorModel + strSep() + v.compound 
       p.cancerType    = v.cancerType
+      p.compound      = v.compound
+      p.modeOfAction  = v.modeOfAction
       p.tmcdCountX    = v.tmcdCountX
       p.tmcdCountY    = v.tmcdCountY
       return p
@@ -160,7 +165,7 @@ runInvitroSensPred = function() {
       .width(175).height(175)
       .dimension(cancerTypeDim)
       .group(cancerTypeHist)
-      .colors(d3.scale.category10())
+      .colors(cancerTypeColors)
   
   // tumor model
   tumorModelRingChart
@@ -173,6 +178,12 @@ runInvitroSensPred = function() {
       .width(175).height(480)
       .dimension(compoundDim)
       .group(compoundHist)
+
+  // mode of action
+  modeOfActionRingChart
+      .width(175).height(175)
+      .dimension(modeOfActionDim)
+      .group(modeOfActionHist)
   
   // value pair
   tumorModelAndCompoundBubbleChart
@@ -181,7 +192,7 @@ runInvitroSensPred = function() {
       .mouseZoomable(true)
       .dimension(tumorModelAndCompoundDim)
       .group(tumorModelAndCompoundReduction)
-      .colors(d3.scale.category10())
+      .colors(cancerTypeColors)
       .colorAccessor(function (p) {
         return getCancerTypeNumber(p.value.cancerType)
        })
@@ -213,7 +224,7 @@ runInvitroSensPred = function() {
            'Substance, Model: ' + labeler(p.value.label, ', ') + strSep() 
           + getDimensionName('x') + ': ' + p.value.avgX + ', '
           + getDimensionName('y') + ': ' + p.value.avgY  + strSep()
-          + 'Count ('+ getDimensionName('x') + ' and ' + getDimensionName('y') + '): ' + (p.value.countX + p.value.countY)
+          + 'Count ('+ getDimensionName('x') + ' + ' + getDimensionName('y') + '): ' + (p.value.countX + p.value.countY)
         )
        })
   

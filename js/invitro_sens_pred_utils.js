@@ -68,3 +68,8 @@ var addCountsForTumorModelAndCompound = function(data) {
   return data
 }
 
+// see http://goo.gl/xUNT0a
+var cancerTypeColors = 
+["#FFE500", "#BFB130", "#A69500", "#FFEC40", "#FFF173", 
+ "#00B25C", "#218555", "#00733C", "#36D88A", "#61D89F",
+ "#FF4100", "#BF5430", "#A62A00", "#FF7140", "#FF9773"]
