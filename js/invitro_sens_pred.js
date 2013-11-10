@@ -220,7 +220,7 @@ runInvitroSensPred = function() {
          return p.value.avgY
        })
       .radiusValueAccessor(function (p) {
-         return p.value.countX + p.value.countY
+         return (d3.scale.log().domain(getCountsRange(cancerData)).range([0.5,2])(p.value.countX + p.value.countY))
        })
   
       .y(d3.scale.linear().domain(d3.extent(cancerData, function(d){return d.y})))
@@ -237,12 +237,7 @@ runInvitroSensPred = function() {
         return labeler(p.value.label, ', ')
        })
       .title(function (p) {
-          return labeler(
-           'Substance, Model: ' + labeler(p.value.label, ', ') + strSep() 
-          + getDimensionName('x') + ': ' + p.value.avgX + ', '
-          + getDimensionName('y') + ': ' + p.value.avgY  + strSep()
-          + 'Count ('+ getDimensionName('x') + ' + ' + getDimensionName('y') + '): ' + (p.value.countX + p.value.countY)
-        )
+          return titleFunctionBubble(p)
        })
   
       .renderHorizontalGridLines(true) // (optional) render horizontal grid lines, :default=false

@@ -87,6 +87,10 @@ var getModesOfAction = function(cancerData) {
   return d3.unique(cancerData.map(function(d) {return d.modeOfAction}))
 }
 
+var getCountsRange = function(cancerData) {
+  return d3.extent(cancerData.map(function(d) {return d.tmcdCountX + d.tmcdCountY}))
+}
+
 colorizeAccToCancerTypes = function() {
   tumorModelAndCompoundBubbleChart.colorAccessor(
       function(p){
@@ -121,3 +125,17 @@ colorizeAccToModesOfAction = function() {
   cancerTypeRingChart.redraw()
 }
 
+titleFunctionBubble = function (p,reduceFun) {
+  if (reduceFun==undefined) reduceFun='avg'
+
+  coords = getDimensionName('x') + ': ' + p.value[reduceFun + 'X'] + ', '
+         + getDimensionName('y') + ': ' + p.value[reduceFun + 'Y']  + strSep()
+
+  res=labeler(
+    'Substance, Model: ' + labeler(p.value.label, ', ') + strSep() 
+  )
+  + 'Coordinates: ' + labeler(coords)
+  + labeler('Number of Data Points ('+ getDimensionName('x') + ' + ' + getDimensionName('y') + '): ' + (p.value.countX + p.value.countY))
+
+  return(res)
+}
