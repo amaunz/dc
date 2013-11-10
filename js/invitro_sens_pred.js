@@ -1,6 +1,7 @@
 // init charts and data
-var cancerTypeRingChart              = dc.pieChart("#cancer-type-chart")
-var compoundRingChart                = dc.pieChart("#compound-chart")
+var cancerTypeRingChart              = dc.rowChart("#cancer-type-chart")
+var tumorModelRingChart              = dc.rowChart("#tumor-model-chart")
+var compoundRingChart                = dc.rowChart("#compound-chart")
 var tumorModelAndCompoundHistChartX  = dc.barChart("#tumor-model-and-compound-hist-chart-x")
 var tumorModelAndCompoundHistChartY  = dc.barChart("#tumor-model-and-compound-hist-chart-y")
 var tumorModelAndCompoundBubbleChart = dc.bubbleChart("#tumor-model-and-compound-bubble-chart")
@@ -28,12 +29,13 @@ var cancerData = [
 
 
 var cancerData                     = addCountsForTumorModelAndCompound(cancerData)
-console.log(cancerData)
+//console.log(cancerData)
 
 var cancerFacts                    = crossfilter(cancerData)
 
 // dimensions
 var cancerTypeDim                  = cancerFacts.dimension(function(d) {return d.cancerType})
+var tumorModelDim                  = cancerFacts.dimension(function(d) {return d.tumorModel})
 var compoundDim                    = cancerFacts.dimension(function(d) {return d.compound  })
 var tmcdCountXDim                  = cancerFacts.dimension(function(d) {return d.tmcdCountX})
 var tmcdCountYDim                  = cancerFacts.dimension(function(d) {return d.tmcdCountY})
@@ -41,6 +43,7 @@ var tumorModelAndCompoundDim       = cancerFacts.dimension(function(d) {return g
 
 // reduce-count
 var cancerTypeHist                 = cancerTypeDim                .group().reduceCount()
+var tumorModelHist                 = tumorModelDim                .group().reduceCount()
 var compoundHist                   = compoundDim                  .group().reduceCount()
 var tmcdCountXHist                 = tmcdCountXDim                .group().reduceCount()
 var tmcdCountYHist                 = tmcdCountYDim                .group().reduceCount()
@@ -95,20 +98,34 @@ var tumorModelAndCompoundReduction = tumorModelAndCompoundDim.group().reduce(
 // histogram
 var xlim = getTumorModelAndCompoundDimExtent(cancerData)
 //console.log(xlim)
-var xTicks = xlim[1]-xlim[0]+1
+var xTicks = xlim[1]-xlim[0]+2
+console.log('xTicks')
+console.log(xTicks)
 xlim[0]-=1
 xlim[1]+=1
 
-var yTicksX=d3.max(tumorModelAndCompoundReduction.all(), function(d) { return d.value.countX })
+var yTicksX=d3.max(tmcdCountXHist.all(), function(d) { return d.value/d.key })
+var yTicksY=d3.max(tmcdCountYHist.all(), function(d) { return d.value/d.key })
+var yTicks =d3.max([yTicksX, yTicksY])
+
+console.log('yTicks')
+console.log(yTicks)
+
+
+var barChartCommons = function(chart) {
+  chart.centerBar(true)
+       .gap(10)
+       .brushOn(true)
+       .renderHorizontalGridLines(true)
+       .colors(d3.scale.linear().range(['#BBB','#DDD']))
+  return(chart)
+}
+
+tumorModelAndCompoundHistChartX = barChartCommons(tumorModelAndCompoundHistChartX)
 tumorModelAndCompoundHistChartX
-    .centerBar(true)
-    .gap(0.2)
-    .brushOn(true)
-    .renderHorizontalGridLines(true)
     .width(200).height(200)
     .dimension(tmcdCountXDim)
     .group(tmcdCountXHist)
-    .colors(d3.scale.linear().range(['#BBB','#DDD']))
     .x(d3.scale.linear().domain(xlim))
     .valueAccessor(function(d) {return d.value/d.key})
 tumorModelAndCompoundHistChartX
@@ -118,18 +135,13 @@ tumorModelAndCompoundHistChartX
 tumorModelAndCompoundHistChartX
     .yAxis().tickFormat(function(v) {return Math.round(v)})
     .tickSubdivide(0)
-    .ticks(yTicksX)
+    .ticks(yTicks)
 
-var yTicksY=d3.max(tumorModelAndCompoundReduction.all(), function(d) { return d.value.countY })
+tumorModelAndCompoundHistChartY = barChartCommons(tumorModelAndCompoundHistChartY)
 tumorModelAndCompoundHistChartY
-    .centerBar(true)
-    .gap(0.2)
-    .brushOn(true)
-    .renderHorizontalGridLines(true)
     .width(200).height(200)
     .dimension(tmcdCountYDim)
     .group(tmcdCountYHist)
-    .colors(d3.scale.linear().range(['#BBB','#DDD']))
     .x(d3.scale.linear().domain(xlim))
     .valueAccessor(function(d) {return d.value/d.key})
 tumorModelAndCompoundHistChartY
@@ -139,26 +151,26 @@ tumorModelAndCompoundHistChartY
 tumorModelAndCompoundHistChartY
     .yAxis().tickFormat(function(v) {return Math.round(v)})
     .tickSubdivide(0)
-    .ticks(yTicksX)
-
-
-
+    .ticks(yTicks)
 
 // cancer type
 cancerTypeRingChart
     .width(175).height(175)
     .dimension(cancerTypeDim)
     .group(cancerTypeHist)
-    .innerRadius(0)
     .colors(d3.scale.category10())
+
+// tumor model
+tumorModelRingChart
+    .width(175).height(175)
+    .dimension(tumorModelDim)
+    .group(tumorModelHist)
 
 // compound
 compoundRingChart
     .width(175).height(175)
     .dimension(compoundDim)
     .group(compoundHist)
-    .innerRadius(0)
-    .colors(d3.scale.linear().range(['#BBB','#DDD']))
 
 // value pair
 tumorModelAndCompoundBubbleChart
