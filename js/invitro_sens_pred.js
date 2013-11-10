@@ -31,7 +31,7 @@ runInvitroSensPred = function() {
   ];
   
   
-  var cancerData                     = addCountsForTumorModelAndCompound(cancerData)
+  window.cancerData                     = addCountsForTumorModelAndCompound(cancerData)
   //console.log(cancerData)
   
   var cancerFacts                    = crossfilter(cancerData)
@@ -165,7 +165,7 @@ runInvitroSensPred = function() {
       .width(175).height(175)
       .dimension(cancerTypeDim)
       .group(cancerTypeHist)
-      .colors(cancerTypeColors)
+      .colors(cancerDataColors)
   
   // tumor model
   tumorModelRingChart
@@ -192,9 +192,10 @@ runInvitroSensPred = function() {
       .mouseZoomable(true)
       .dimension(tumorModelAndCompoundDim)
       .group(tumorModelAndCompoundReduction)
-      .colors(cancerTypeColors)
+      .colors(cancerDataColors)
       .colorAccessor(function (p) {
-        return getCancerTypeNumber(p.value.cancerType)
+        return(getCancerTypes(cancerData)
+              .indexOf(p.value.cancerType))
        })
       .keyAccessor(function (p) {
          return p.value.avgX

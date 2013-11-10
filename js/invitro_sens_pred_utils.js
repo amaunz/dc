@@ -68,8 +68,48 @@ var addCountsForTumorModelAndCompound = function(data) {
   return data
 }
 
-// see http://goo.gl/xUNT0a
-var cancerTypeColors = 
+// Colors see http://goo.gl/xUNT0a
+
+var cancerDataColors = 
 ["#FFE500", "#BFB130", "#A69500", "#FFEC40", "#FFF173", 
  "#00B25C", "#218555", "#00733C", "#36D88A", "#61D89F",
  "#FF4100", "#BF5430", "#A62A00", "#FF7140", "#FF9773"]
+
+d3.unique = function(array) {
+  return d3.scale.ordinal().domain(array).domain();
+}
+
+var getCancerTypes = function(cancerData) {
+  return d3.unique(cancerData.map(function(d) {return d.cancerType}))
+}
+
+var getModesOfAction = function(cancerData) {
+  return d3.unique(cancerData.map(function(d) {return d.modeOfAction}))
+}
+
+colorizeAccToCancerTypes = function() {
+  tumorModelAndCompoundBubbleChart.colorAccessor(
+      function(p){
+        return(getCancerTypes(cancerData)
+              .indexOf(p.value.cancerType))
+      })
+  tumorModelAndCompoundBubbleChart.redraw()
+  cancerTypeRingChart.colors(cancerDataColors)
+  cancerTypeRingChart.redraw()
+  modeOfActionRingChart.colors(d3.scale.category20c())
+  modeOfActionRingChart.redraw()
+}
+
+colorizeAccToModesOfAction = function() {
+  tumorModelAndCompoundBubbleChart.colorAccessor(
+      function(p){
+        return(getModesOfAction(cancerData)
+              .indexOf(p.value.modeOfAction))
+      })
+  tumorModelAndCompoundBubbleChart.redraw()
+  modeOfActionRingChart.colors(cancerDataColors)
+  modeOfActionRingChart.redraw()
+  cancerTypeRingChart.colors(d3.scale.category20c())
+  cancerTypeRingChart.redraw()
+}
+
